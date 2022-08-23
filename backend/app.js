@@ -4,6 +4,9 @@ const express = require('express');
 //On importe mongoose, package qui facilite les interactions entre notre application Express et notre base de données MongoDB.
 const mongoose = require('mongoose');
 
+//On importe les routes utilisateurs
+const userRoutes = require('./routes/users')
+
 //On définit une constante app pour créer une application express
 const app = express();
 //on connecte notre application à notre base de données en ajoutant des messages de réussite ou d'échec
@@ -32,6 +35,9 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+// la route attendue par le frontend est /api/auth, on dit à l'application d'utiliser ces routes
+app.use('/api/auth', userRoutes);
 
 //On exporte app pour pouvoir l'utiliser dans les autres fichiers
 module.exports = app;
