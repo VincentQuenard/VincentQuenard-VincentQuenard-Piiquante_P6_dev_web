@@ -5,7 +5,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 //On importe les routes utilisateurs
-const userRoutes = require('./routes/users')
+const userRoutes = require('./routes/users');
+const sauceRoutes = require('./routes/sauce');
+
+
+//A COMPRENDRE CE QUE CA FAIT APRES IMPLEMENTATION ROUTES SAUCES
+const path = require('path');
 
 //On définit une constante app pour créer une application express
 const app = express();
@@ -36,8 +41,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// la route attendue par le frontend est /api/auth, on dit à l'application d'utiliser ces routes
+// la route attendue par le frontend est /api/auth pour les utilisateurs et /api/sauces pour le contenu, on dit à l'application d'utiliser ces routes
 app.use('/api/auth', userRoutes);
+app.use('/api/sauces', sauceRoutes);
+
+//A COMPRENDRE CE QUE CA FAIT APRES IMPLEMENTATION ROUTES SAUCES
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //On exporte app pour pouvoir l'utiliser dans les autres fichiers
 module.exports = app;

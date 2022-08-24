@@ -42,7 +42,7 @@ exports.login = (req, res, next) => {
                 token: jwToken
                   .sign (// pour chiffrer un nouveau token de données
                   {userId : user._id},
-                  'RANDOM_TOKEN', //clé secrète pour l'encodage
+                  'MYSECRETKEYFORMYTOKEN', //clé secrète pour l'encodage
                   { expiresIn: '24h'},//le token expire dans 24h
                   ),
               });
