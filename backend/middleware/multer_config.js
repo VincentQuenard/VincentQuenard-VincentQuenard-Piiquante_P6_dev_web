@@ -5,11 +5,10 @@ const multer = require('multer');
 
 // mime types utilisés pour générer une extension à notre fichier généré dans l'objet de configuration, notre "dictionnaire"
 const MIME_TYPES = {
-  'image/jpg': 'jpg',
+  'image/jpg': 'jpg', //on traduit image/jpg en jpg
   'image/jpeg': 'jpeg',
-  'image/png': 'png',
-  'image/webp': 'webp',
-};
+  'image/png': 'png'
+  };
 
 // On crée un objet de configuration pour multer
 const storage = multer.diskStorage({

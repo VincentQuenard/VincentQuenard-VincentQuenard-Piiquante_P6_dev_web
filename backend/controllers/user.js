@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const jwToken = require('jsonwebtoken')
 
 //On importe notre modèle d'utilisateurs
-const User = require('../models/users')
+const User = require('../models/User')
 
 
 exports.signup = (req, res, next) => {
@@ -14,20 +14,20 @@ exports.signup = (req, res, next) => {
       //on récupère le hash du mdp qu'on va enregistrer pour un nouvel utilisateur et que l'on va enregistrer dans la BD
       const user = new User({
         email: req.body.email, //l'adresse email est celle fournie dans le corps de la requête
-        password: hash, //le mdp est celui qu l'on a hashé
+        password: hash //le mdp est celui qu l'on a hashé
       });
       user
         .save() //On utilise la méthode save() pour enregistrer le nouvel utilisateur dans la BD
         .then(()=> res.status(201).json({message : 'Nouvel utilisateur créé'})) // 201 = creation de ressources
-        .catch((error) => res.status(400).json({ error })); // le serveur n'a pas pu comprendre la requête à cause d'une syntaxe invalide.
+        .catch(error => res.status(400).json({ error })); // le serveur n'a pas pu comprendre la requête à cause d'une syntaxe invalide.
     })
-    .catch((error) => res.status(500).json({ error })); //Le serveur a rencontré une situation qu'il ne sait pas traiter.
+    .catch(error => res.status(500).json({ error })); //Le serveur a rencontré une situation qu'il ne sait pas traiter.
 };
 
 exports.login = (req, res, next) => {
   User.findOne({email : req.body.email})//On filtre avec l'email entré par l'utilisateur dans le front
   .then(user =>{
-    if (user ===null){
+    if (!user){
       //l'utilisateur n'existe pas dans la BD
       res.status(401).json({ message: 'identifiant / mot de passe incorrect' }); //Pour la sécurité on ne dit pas que l'utilisateur n'éxiste pas, 401 = non authorisé, la requête nécessite que le client soit identifié.
     } else{
@@ -48,7 +48,7 @@ exports.login = (req, res, next) => {
               });
             }
           })
-          .catch((error) => {
+          .catch(error => {
             res.status(500).json({ error });
           });
       }

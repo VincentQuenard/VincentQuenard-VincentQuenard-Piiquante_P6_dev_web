@@ -5,11 +5,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 //On importe les routes utilisateurs
-const userRoutes = require('./routes/users');
+const userRoutes = require('./routes/user');
 const sauceRoutes = require('./routes/sauce');
 
-
-//A COMPRENDRE CE QUE CA FAIT APRES IMPLEMENTATION ROUTES SAUCES
+// On importe path pour accéder au path de notre serveur
 const path = require('path');
 
 //On définit une constante app pour créer une application express
@@ -24,7 +23,6 @@ mongoose
 
 //Pour gérer la requête POST venant de l'application front-end, on a besoin d'en extraire le corps JSON donc avoir accès à req.body(cela remplace body parcer)
 app.use(express.json());
-
 
 //CORS bloque les requêtes http entre des serveurs différents, le back tourne sur le port 3000, le front sur 4200
 //Des headers spécifiques de contrôle d'accès doivent être précisés pour tous nos objets de réponse.
@@ -45,7 +43,8 @@ app.use((req, res, next) => {
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);
 
-//A COMPRENDRE CE QUE CA FAIT APRES IMPLEMENTATION ROUTES SAUCES
+//A DEMANDER ECLAIRCISSEMENTS A THOMAS POUR PATH.JOIN
+//Cela indique à Express qu'il faut gérer la ressource images de manière statique (un sous-répertoire de notre répertoire de base, __dirname) à chaque fois qu'elle reçoit une requête vers la route /images
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //On exporte app pour pouvoir l'utiliser dans les autres fichiers
