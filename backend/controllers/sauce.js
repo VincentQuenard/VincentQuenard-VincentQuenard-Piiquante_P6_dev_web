@@ -11,21 +11,6 @@ exports.getAllSauces = (req, res, next) => {
 };
 // on exporte les fonctions pour créer des sauces
 exports.createSauce = (req, res, next) => {
-  /*// LE FRONT RENVOIT IL UN ID ????????
-  //L'id est généré directement par mongoDB donc on retire celui du front
-  delete req.body._id;
-
-  //On récupère le modèle de sauce et on s'en sert pour créer la nouvelle sauce
-  const sauce = new Sauce({
-    //On utilise l'opérateur spread qui va copier les champs du body de la requête au lieu que nous ayons à les réécrire ex : req.body.name
-    ...req.body,
-  });
-  // on enregistre cette nouvelle sauce dans la BD qui retourne une promesse
-  sauce
-    .save()
-    .then(() => res.status(201).json({ message: 'Nouvelle sauce enregistrée' }))
-    .catch((error) => res.status(400).json({ error }));*/
-
   const sauceObject = JSON.parse(req.body.sauce); //on parse la requête qui est une chaine de caractère pour en faire un objet js
   delete sauceObject._id; // on supprime l'id car il est généré automatiquement par a BD
   delete sauceObject._userId; // on supprime le userId par sécurité d'usurpation d'identité
@@ -56,9 +41,6 @@ exports.getOneSauce = (req, res, next) => {
 
 // On veut pouvoir modifier et mettre à jour une sauce
 exports.modifySauce = (req, res, next) => {
-  /* Sauce.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-    .then(() => res.status(200).json({ message: 'Sauce modifiée' }))
-    .catch((error) => res.status(400).json({ error }));*/
   const sauceObject = req.file
     ? {
         //nous regardons dans notre requête s'il y a un champ file donc une image
@@ -91,10 +73,6 @@ exports.modifySauce = (req, res, next) => {
 
 // On veut pouvoir supprimer une sauce
 exports.deleteSauce = (req, res, next) => {
-  /*Sauce.deleteOne({ _id: req.params.id })
-    .then(() => res.status(200).json({ message: 'Sauce supprimée' }))
-    .catch((error) => res.status(400).json({ error }));*/
-
   Sauce.findOne({ _id: req.params.id }) //On récupère la sauce dans la BD
     .then((sauce) => {
       // on va vérifier si la sauce appartient bien à l'utilisateur qui veut la modifier
