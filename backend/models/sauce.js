@@ -1,5 +1,4 @@
 //Modèle sauces
-
 const mongoose = require('mongoose');
 
 //La méthode  Schema  de Mongoose  permet de créer un schéma de données pour la base de données MongoDB.
@@ -19,4 +18,4 @@ const sauceSchema = mongoose.Schema({
 
 //On exporte le modèle utilisateurs
 //La méthode model transforme ce modèle en un modèle utilisable pour l'application express
-module.exports = mongoose.model('sauce', sauceSchema);
+module.exports = mongoose.model('Sauce', sauceSchema);

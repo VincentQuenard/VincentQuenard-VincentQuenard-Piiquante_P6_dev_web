@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 
 //On importe le le package de validateur email unique
-const uniqueValidator =require('mongoose-unique-validator')
+const uniqueValidator = require('mongoose-unique-validator')
 
 //La méthode  Schema  de Mongoose  permet de créer un schéma de données pour la base de données MongoDB.
 const userSchema = mongoose.Schema({
@@ -16,4 +16,4 @@ userSchema.plugin(uniqueValidator)
 
 //On exporte le modèle utilisateurs
 //La méthode model transforme ce modèle en un modèle utilisable pour l'application express
-module.exports = mongoose.model('user', userSchema)
+module.exports = mongoose.model('User', userSchema)

@@ -16,7 +16,7 @@ const app = express();
 //on connecte notre application à notre base de données en ajoutant des messages de réussite ou d'échec
 mongoose
   .connect(
-    'mongodb+srv://VincentQND:Vinsof3008@cluster0.5zedb.mongodb.net/?retryWrites=true&w=majority'
+    'mongodb+srv://VincentQND:Vinsof3008@cluster0.5zedb.mongodb.net/test?retryWrites=true&w=majority'
   )
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));

@@ -32,12 +32,14 @@ exports.createSauce = (req, res, next) => {
   const sauce = new Sauce({
     ...sauceObject,
     userId: req.auth.userId, //on utilise le userID contenu dans le token pour être sur qu'il s'agit bien de la personne connectée
-    imageUrl: `${req.protocol}://${req.get('host')}/images/${re.file.filename}`,
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${
+      req.file.filename
+    }`,
   });
 
   sauce
     .save()
-    .then(() => {
+    .then((error, result) => {
       res.status(201).json({ message: 'Nouvelle sauce enregistrée' });
     })
     .catch((error) => {
@@ -68,11 +70,10 @@ exports.modifySauce = (req, res, next) => {
     : { ...req.body }; // sinon on recupère le corps de la requête
 
   delete sauceObject._userId;
-  sauce
-    .findOne({ _id: req.params.id }) //on récupère la sauce dans la BD
+  Sauce.findOne({ _id: req.params.id }) //on récupère la sauce dans la BD
     .then((sauce) => {
       // on va vérifier si la sauce appartient bien à l'utilisateur qui veut la modifier
-      if (sauce.userId != req.auth.user) {
+      if (sauce.userId != req.auth.userId) {
         // si le userId est différent de celui contenu dans le token d'authentification l'utilisateur veut modifier une sauce qui ne lui appartient pas
         res.status(401).json({ message: 'modification non autorisée' }); //pb authentification
       } else {
@@ -97,17 +98,19 @@ exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id }) //On récupère la sauce dans la BD
     .then((sauce) => {
       // on va vérifier si la sauce appartient bien à l'utilisateur qui veut la modifier
-      if (sauce.userId != req.auth.user) {
+      if (sauce.userId != req.auth.userId) {
         // si le userId est différent de celui contenu dans le token d'authentification l'utilisateur veut modifier une sauce qui ne lui appartient pas
         res.status(401).json({ message: 'utilisateur non autorisé' }); //pb authentification
       } else {
         const filename = sauce.imageUrl.split('/images/')[1];
         //La méthode fs.unlink() est utilisée pour supprimer un fichier ou un lien symbolique du système de fichiers
-        fs.unlink(`images/${filename}`, ()=>{
+        fs.unlink(`images/${filename}`, () => {
           Sauce.deleteOne({ _id: req.params.id })
-          .then(()=>{res.status(200).json({message : ' Sauce supprimée'})})
-          .catch(error => res.status(401).json({error}))
-        })
+            .then(() => {
+              res.status(200).json({ message: ' Sauce supprimée' });
+            })
+            .catch((error) => res.status(401).json({ error }));
+        });
       }
     })
     .catch((error) => res.status(500).json({ error }));

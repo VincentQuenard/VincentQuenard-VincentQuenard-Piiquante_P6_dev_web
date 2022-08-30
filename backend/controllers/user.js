@@ -29,13 +29,13 @@ exports.login = (req, res, next) => {
   .then(user =>{
     if (!user){
       //l'utilisateur n'existe pas dans la BD
-      res.status(401).json({ message: 'identifiant / mot de passe incorrect' }); //Pour la sécurité on ne dit pas que l'utilisateur n'éxiste pas, 401 = non authorisé, la requête nécessite que le client soit identifié.
+      return res.status(401).json({ message: 'identifiant / mot de passe incorrect' }); //Pour la sécurité on ne dit pas que l'utilisateur n'éxiste pas, 401 = non authorisé, la requête nécessite que le client soit identifié.
     } else{
         bcrypt
           .compare(req.body.password, user.password) //on compare le mot de passe entré par l'utilisateur et celui stocké par la BD
           .then(valid =>{//si correspondance
             if(!valid){
-              res.status(401).json({ message: 'identifiant / mot de passe incorrect' });
+              return res.status(401).json({ message: 'identifiant / mot de passe incorrect' });
             }else{
               res.status(200).json({
                 userId: user._id,

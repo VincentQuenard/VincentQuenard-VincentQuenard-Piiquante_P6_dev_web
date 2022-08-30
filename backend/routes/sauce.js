@@ -4,11 +4,11 @@ const express = require('express');
 // On importe le middleware chargé de la sécurité des connexions utilisateur
 const auth = require('../middleware/auth');
 
-//la classe express.Router pour créer des gestionnaires de route
-const router = express.Router();
-
 // On importe l'objet de configuration créé avec multer pour gérer les fichiers (img dans notre cas)
 const multerConfig = require('../middleware/multer_config');
+
+//la classe express.Router pour créer des gestionnaires de route
+const router = express.Router();
 
 //On importe les fonctions servant au routage
 const sauceController = require('../controllers/sauce');

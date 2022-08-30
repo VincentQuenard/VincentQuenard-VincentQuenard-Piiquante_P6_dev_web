@@ -6,7 +6,7 @@ const multer = require('multer');
 // mime types utilisés pour générer une extension à notre fichier généré dans l'objet de configuration, notre "dictionnaire"
 const MIME_TYPES = {
   'image/jpg': 'jpg', //on traduit image/jpg en jpg
-  'image/jpeg': 'jpeg',
+  'image/jpeg': 'jpg',
   'image/png': 'png'
   };
 
@@ -27,4 +27,4 @@ const storage = multer.diskStorage({
 });
 
 // On exporte le middleware qu'on a configuré
-module.exports = multer({ storage}).single('image'); //single pour dire qu'il s'agit d'un fichier unique et pas un groupe de fichiers, et on dit à multer qu'il s'agit de fichiers image
+module.exports = multer({ storage : storage}).single('image'); //single pour dire qu'il s'agit d'un fichier unique et pas un groupe de fichiers, et on dit à multer qu'il s'agit de fichiers image
