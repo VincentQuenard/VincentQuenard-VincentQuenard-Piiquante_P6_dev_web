@@ -10,6 +10,7 @@ const sauceSchema = mongoose.Schema({
   mainPepper: { type: String, require: true }, // le principal ingrédient épicé de la sauce obligatoire
   imageUrl: { type: String, require: true }, // l'URL de l'image de la sauce téléchargée par l'utilisateur obligatoire
   heat: { type: Number, require: true }, // // nombre entre 1 et 10 décrivant la sauce obligatoire
+  //Like et dislike
   likes: { type: Number, default: 0 }, // nombre d'utilisateurs qui aiment (= likent) la sauce, à l'ajout il n'y en a pas donc 0 par défaut
   dislikes: { type: Number, default: 0 }, // nombre d'utilisateurs qui n'aiment pas (= dislike) la sauce
   usersLiked: { type: [String] }, // tableau des identifiants des utilisateurs qui ont aimé (= liked) la sauce
