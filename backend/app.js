@@ -1,6 +1,10 @@
 //On importe le module express
 const express = require('express');
 
+//on importe helmet
+//Helmet vous aide à protéger votre application de certaines des vulnérabilités bien connues du Web en configurant de manière appropriée des en-têtes HTTP.
+const helmet = require('helmet');
+
 //On importe mongoose, package qui facilite les interactions entre notre application Express et notre base de données MongoDB.
 const mongoose = require('mongoose');
 
@@ -24,6 +28,12 @@ mongoose
 //Pour gérer la requête POST venant de l'application front-end, on a besoin d'en extraire le corps JSON donc avoir accès à req.body(cela remplace body parcer)
 app.use(express.json());
 
+//On utilise helmet avant de gérer le CORS
+app.use(helmet());
+
+//L'en-tête de réponse HTTP Cross-Origin-Embedder-Policy(COEP) empêche un document de charger des ressources d'origine croisée qui n'accordent pas explicitement l'autorisation de document
+//Helmet bloque l'affichage des images on ajoute donc :
+app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 //CORS bloque les requêtes http entre des serveurs différents, le back tourne sur le port 3000, le front sur 4200
 //Des headers spécifiques de contrôle d'accès doivent être précisés pour tous nos objets de réponse.
 app.use((req, res, next) => {
