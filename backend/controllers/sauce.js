@@ -1,7 +1,6 @@
 //id de la sauce = req.params.id
 //id utilisateur = req.body.userId
 
-
 const Sauce = require('../models/Sauce');
 // On importe fs : Le module de système de fichiers Node.js vous permet de travailler avec le système de fichiers de votre ordinateur.
 const fs = require('fs');
@@ -85,13 +84,14 @@ exports.deleteSauce = (req, res, next) => {
         res.status(401).json({ message: 'utilisateur non autorisé' }); //pb authentification
       } else {
         const filename = sauce.imageUrl.split('/images/')[1];
+
         //La méthode fs.unlink() est utilisée pour supprimer un fichier ou un lien symbolique du système de fichiers
         fs.unlink(`images/${filename}`, () => {
           Sauce.deleteOne({ _id: req.params.id })
             .then(() => {
               res.status(200).json({ message: ' Sauce supprimée' });
             })
-            .catch((error) => res.status(401).json({ error }));//non authorisé
+            .catch((error) => res.status(401).json({ error })); //non authorisé
         });
       }
     })
@@ -99,98 +99,96 @@ exports.deleteSauce = (req, res, next) => {
 };
 
 exports.likeOrDislikeSauce = (req, res, next) => {
-  
-  console.log('je suis sur la bonne route',req.params, req.body)
+  console.log('je suis sur la bonne route', req.params, req.body);
   Sauce.findOne({ _id: req.params.id }) //On récupère la sauce dans la BD par son ID
     .then((sauce) => {
-      //---------------Si l'utilisateur clique sur like--------------------------
       console.log(req.body.like);
-      //Si l'utilisateur n'est pas dans le tableau des utilisateurs ayant liké et qu'il a aimé la sauce donc like =1
-      if (!sauce.usersLiked.includes(req.body.userId) && req.body.like === 1) {
-        //Mise à jour de la sauce dans la BD
-        Sauce.updateOne(
-          { _id: req.params.id },
-          {
-            //On incrémente le champ like
-            $inc: { likes: 1 }, //L'opérateur $inc incrémente un champ d'une valeur spécifiée et a la forme suivante :{ $inc: { <field1>: <amount1>, <field2>: <amount2>, ... } }
-            //on met l'utilisateur dans le tableau des userLiked
-            $push: { usersLiked: req.body.userId }, //L'opérateur  $push ajoute une valeur spécifiée à un tableau et a la forme :{ $push: { <field1>: <value1>, ... } }
+      //L'instruction switch évalue une expression et, selon le résultat obtenu et le cas associé, exécute les instructions correspondantes.
+      switch (req.body.like) {
+        case 1:
+          //---------------Si l'utilisateur clique sur like--------------------------
+
+          //Si l'utilisateur n'est pas dans le tableau des utilisateurs ayant liké et qu'il a aimé la sauce donc like =1
+          if (!sauce.usersLiked.includes(req.body.userId)) {
+            //Mise à jour de la sauce dans la BD
+            Sauce.updateOne(
+              { _id: req.params.id },
+              {
+                //On incrémente le champ like
+                $inc: { likes: 1 }, //L'opérateur $inc incrémente un champ d'une valeur spécifiée et a la forme suivante :{ $inc: { <field1>: <amount1>, <field2>: <amount2>, ... } }
+                //on met l'utilisateur dans le tableau des userLiked
+                $push: { usersLiked: req.body.userId }, //L'opérateur  $push ajoute une valeur spécifiée à un tableau et a la forme :{ $push: { <field1>: <value1>, ... } }
+              }
+            ) //$inc L'opérateur incrémente un champ d'une valeur spécifiée
+              .then(() => {
+                res.status(201).json({ message: ' Vous aimez cette sauce' });
+              })
+              .catch((error) => res.status(400).json({ error })); // mauvaise requête
           }
-        ) //$inc L'opérateur incrémente un champ d'une valeur spécifiée
-          .then(() => {
-            res.status(201).json({ message: ' Vous aimez cette sauce' });
-          })
-          .catch((error) => res.status(400).json({ error })); // mauvaise requête
-      }
-
-      //Si l'utilisateur est dans le tableau des utilisateurs ayant liké et que le like est à 0, donc s'il n'aime plus la sauce
-      if (sauce.usersLiked.includes(req.body.userId) && req.body.like === 0) {
-        //Mise à jour de la sauce dans la BD
-        Sauce.updateOne(
-          { _id: req.params.id },
-          {
-            //On décrémente le champ like
-            $inc: { likes: -1 }, //L'opérateur $inc incrémente un champ d'une valeur spécifiée et a la forme suivante :{ $inc: { <field1>: <amount1>, <field2>: <amount2>, ... } }
-            //on met l'utilisateur dans le tableau des userLiked
-            $pull: { usersLiked: req.body.userId }, //L'opérateur $pull supprime d'un tableau existant toutes les instances d'une valeur ou de valeurs qui correspondent à une condition spécifiée.
-          }) 
-          .then(() => {
-            res.status(201).json({ message: ' vous avez retiré votre vote like' });
-          })
-          .catch((error) => res.status(400).json({ error })); // mauvaise requête
-      }
-
-      //---------------Si l'utilisateur clique sur dislike-----------------------
-
-      //Si l'utilisateur n'est pas dans le tableau des utilisateurs ayant disliké et qu'il n'a pas aimé la sauce donc like =-1 car pas dislike dans req.body
-      if (
-        !sauce.usersDisliked.includes(req.body.userId) &&
-        req.body.like === -1
-      ) {
-        //Mise à jour de la sauce dans la BD
-        Sauce.updateOne(
-          { _id: req.params.id },
-          {
-            //On incrémente le champ dislike
-            $inc: { dislikes: 1 }, //L'opérateur $inc incrémente un champ d'une valeur spécifiée et a la forme suivante :{ $inc: { <field1>: <amount1>, <field2>: <amount2>, ... } }
-            //on met l'utilisateur dans le tableau des userLiked
-            $push: { usersDisliked: req.body.userId }, //L'opérateur  $push ajoute une valeur spécifiée à un tableau et a la forme :{ $push: { <field1>: <value1>, ... } }
+          break;
+        //---------------Si l'utilisateur clique sur dislike-----------------------
+        case -1:
+          //Si l'utilisateur n'est pas dans le tableau des utilisateurs ayant disliké et qu'il n'a pas aimé la sauce donc like =-1 car pas dislike dans req.body
+          if (!sauce.usersDisliked.includes(req.body.userId)) {
+            //Mise à jour de la sauce dans la BD
+            Sauce.updateOne(
+              { _id: req.params.id },
+              {
+                //On incrémente le champ dislike
+                $inc: { dislikes: 1 }, //L'opérateur $inc incrémente un champ d'une valeur spécifiée et a la forme suivante :{ $inc: { <field1>: <amount1>, <field2>: <amount2>, ... } }
+                //on met l'utilisateur dans le tableau des userLiked
+                $push: { usersDisliked: req.body.userId }, //L'opérateur  $push ajoute une valeur spécifiée à un tableau et a la forme :{ $push: { <field1>: <value1>, ... } }
+              }
+            )
+              .then(() => {
+                res
+                  .status(201)
+                  .json({ message: ' vous n aimez pas cette sauce' });
+              })
+              .catch((error) => res.status(400).json({ error })); // mauvaise requête
           }
-        ) 
-          .then(() => {
-            res.status(201).json({ message: ' vous n aimez pas cette sauce' });
-          })
-          .catch((error) => res.status(400).json({ error })); // mauvaise requête
-      }
+          break;
+        //---------------Si l'utilisateur change d'avis-----------------------
+        case 0:
+          //Si c'est un like
+          //Si l'utilisateur est dans le tableau des utilisateurs ayant liké et que le like est à 0, donc s'il n'aime plus la sauce
+          if (sauce.usersLiked.includes(req.body.userId)) {
+            //Mise à jour de la sauce dans la BD
+            Sauce.updateOne(
+              { _id: req.params.id },
+              {
+                //On décrémente le champ like
+                $inc: { likes: -1 }, //L'opérateur $inc incrémente un champ d'une valeur spécifiée et a la forme suivante :{ $inc: { <field1>: <amount1>, <field2>: <amount2>, ... } }
+                //on met l'utilisateur dans le tableau des userLiked
+                $pull: { usersLiked: req.body.userId }, //L'opérateur $pull supprime d'un tableau existant toutes les instances d'une valeur ou de valeurs qui correspondent à une condition spécifiée.
+              }
+            )
+              .then(() => {
+                res
+                  .status(201)
+                  .json({ message: ' vous avez retiré votre vote like' });
+              })
+              .catch((error) => res.status(400).json({ error })); // mauvaise requête
+          } else if (sauce.usersDisliked.includes(req.body.userId)) {
+            //Si c'est un unlike
 
-      //Si l'utilisateur est dans le tableau des utilisateurs ayant liké et que le like est à 0, donc s'il n'aime plus la sauce
-      if (
-        sauce.usersDisliked.includes(req.body.userId) &&
-        req.body.like === 0
-      ) {
-        //Mise à jour de la sauce dans la BD
-        Sauce.updateOne(
-          { _id: req.params.id },
-          {
-            //On décrémente le champ like
-            $inc: { dislikes: -1 }, //L'opérateur $inc incrémente un champ d'une valeur spécifiée et a la forme suivante :{ $inc: { <field1>: <amount1>, <field2>: <amount2>, ... } }
-            //on met l'utilisateur dans le tableau des userLiked
-            $pull: { usersDisliked: req.body.userId }, //L'opérateur $pull supprime d'un tableau existant toutes les instances d'une valeur ou de valeurs qui correspondent à une condition spécifiée.
+            Sauce.updateOne(
+              { _id: req.params.id },
+              {
+                //On décrémente le champ like
+                $inc: { dislikes: -1 }, //L'opérateur $inc incrémente un champ d'une valeur spécifiée et a la forme suivante :{ $inc: { <field1>: <amount1>, <field2>: <amount2>, ... } }
+                //on met l'utilisateur dans le tableau des userLiked
+                $pull: { usersDisliked: req.body.userId }, //L'opérateur $pull supprime d'un tableau existant toutes les instances d'une valeur ou de valeurs qui correspondent à une condition spécifiée.
+              }
+            )
+              .then(() => {
+                res
+                  .status(201)
+                  .json({ message: ' vous avez retiré votre vote dislike' });
+              })
+              .catch((error) => res.status(400).json({ error })); // mauvaise requête
           }
-        ) //$inc L'opérateur incrémente un champ d'une valeur spécifiée
-          .then(() => {
-            res.status(201).json({ message: ' vous avez retiré votre vote dislike' });
-          })
-          .catch((error) => res.status(400).json({ error })); // mauvaise requête
       }
     })
-    // l'utilisateur like donc like +1
-
-    // l'utilisateur n'a pas d'avis donc like 0 ou dislike 0
-
-    // l'utilisateur dislike donc like -1 et dislike 1
-
     .catch((error) => res.status(404).json({ error })); //404 objet non trouvé
 };
-
-
