@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
     // Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzAzODYwMzJlMTI2OWRhZjdiZjNmMDEiLCJpYXQiOjE2NjEyNDc1NTQsImV4cCI6MTY2MTMzMzk1NH0.YYXwuyyHmpwqXJk1RpCwdXbbMuSVv62OI9B-TVDbN-g
 
     // maintenant que nous avons le token, il faut le décoder avec la méthode verify de jwt et la clé secrète
-    const decodedToken = jwToken.verify(token, 'MYSECRETKEYFORMYTOKEN');
+    const decodedToken = jwToken.verify(token, process.env.SECRET_TOKEN);
 
     //On récupère le user id que l'on décode
     const userId = decodedToken.userId;
