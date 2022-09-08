@@ -72,7 +72,7 @@ app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);
 
 //A DEMANDER ECLAIRCISSEMENTS A THOMAS POUR PATH.JOIN
-//Cela indique à Express qu'il faut gérer la ressource images de manière statique (un sous-répertoire de notre répertoire de base, __dirname) à chaque fois qu'elle reçoit une requête vers la route /images
+//Cela indique à Express qu'il faut gérer la ressource images de manière statique (un sous-répertoire de notre répertoire de base, __dirname(variable d'environnement qui indique le chemin absolu du répertoire contenant le fichier en cours d'exécution.)) à chaque fois qu'elle reçoit une requête vers la route /images
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //On exporte app pour pouvoir l'utiliser dans les autres fichiers

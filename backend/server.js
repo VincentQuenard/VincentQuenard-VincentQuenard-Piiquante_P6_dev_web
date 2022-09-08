@@ -1,4 +1,6 @@
+//The HTTP module can create an HTTP server that listens to server ports and gives a response back to the client
 const http = require('http');
+//on importe notre application
 const app = require('./app')
 
 

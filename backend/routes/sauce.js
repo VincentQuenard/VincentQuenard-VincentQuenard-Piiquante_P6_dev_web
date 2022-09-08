@@ -20,4 +20,7 @@ router.delete('/:id', auth, sauceController.deleteSauce); //route avec utilisate
 router.get('/:id', auth, sauceController.getOneSauce); //route avec utilisateur autorisé pour voir une sauce du site
 router.get('/', auth, sauceController.getAllSauces); //route avec utilisateur autorisé pour voir toutes les sauces du site
 router.post('/:id/like',auth, sauceController.likeOrDislikeSauce); // route avec utilisateur autorisé aimer ou ne pas aimer une sauce
+
+
+
 module.exports = router;

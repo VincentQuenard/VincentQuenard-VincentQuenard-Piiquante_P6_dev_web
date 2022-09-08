@@ -17,10 +17,12 @@ exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce); //on parse la requête qui est une chaine de caractère pour en faire un objet js
   delete sauceObject._id; // on supprime l'id car il est généré automatiquement par a BD
   delete sauceObject._userId; // on supprime le userId par sécurité d'usurpation d'identité
+
   const sauce = new Sauce({
     ...sauceObject,
     userId: req.auth.userId, //on utilise le userID contenu dans le token pour être sur qu'il s'agit bien de la personne connectée
     imageUrl: `${req.protocol}://${req.get('host')}/images/${
+      //ici req.protocol = http, req.get('host') = localhost:3000
       req.file.filename
     }`,
   });
@@ -37,6 +39,7 @@ exports.createSauce = (req, res, next) => {
 
 // On récupère une sauce dans la BD (ex : l'utilisateur affiche toutes les sauces et clique une pour afficher sa page)
 exports.getOneSauce = (req, res, next) => {
+  
   Sauce.findOne({ _id: req.params.id }) //On récupère la sauce dans la BD par son ID
     .then((sauce) => res.status(200).json(sauce)) // on renvoie la sauce
     .catch((error) => res.status(404).json({ error })); //404 objet non trouvé
@@ -171,7 +174,6 @@ exports.likeOrDislikeSauce = (req, res, next) => {
               .catch((error) => res.status(400).json({ error })); // mauvaise requête
           } else if (sauce.usersDisliked.includes(req.body.userId)) {
             //Si c'est un unlike
-
             Sauce.updateOne(
               { _id: req.params.id },
               {
@@ -188,6 +190,9 @@ exports.likeOrDislikeSauce = (req, res, next) => {
               })
               .catch((error) => res.status(400).json({ error })); // mauvaise requête
           }
+         /* break;
+          default: res.status(401).json({message : `Ce type de vote n'est pas authorisé`})
+          default : console.log(error)*/
       }
     })
     .catch((error) => res.status(404).json({ error })); //404 objet non trouvé
