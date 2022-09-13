@@ -25,7 +25,7 @@ exports.signup = (req, res, next) => {
   } else if (!schemaPassword.validate(req.body.password)) {
     res.status(400).json({
       message:
-        'le mot de passe doit avoir aux moins 5 caractères, une majuscule, 2 minuscules et 2 chiffres',
+        'le mot de passe doit avoir aux moins 5 caractères, une majuscule, 2 minuscules et 2 chiffres'
     });
   } else {
     //On chiffre l'email
