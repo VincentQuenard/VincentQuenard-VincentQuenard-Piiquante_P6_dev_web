@@ -12,7 +12,7 @@ const helmet = require('helmet');
 
 const rateLimit = require('express-rate-limit');
 
-//On importe mongo sanitize pour empêcher les injections dans la bd
+//On importe mongo sanitize pour empêcher les injections dans la bdd
 const mongoSanitize = require('express-mongo-sanitize');
 
 //On importe mongoose, package qui facilite les interactions entre notre application Express et notre base de données MongoDB.
@@ -20,6 +20,8 @@ const mongoose = require('mongoose');
 
 //On importe les routes utilisateurs
 const userRoutes = require('./routes/user');
+
+//On importe les routes des sauces
 const sauceRoutes = require('./routes/sauce');
 
 // On importe path pour accéder au path de notre serveur
@@ -77,7 +79,6 @@ app.use((req, res, next) => {
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);
 
-//A DEMANDER ECLAIRCISSEMENTS A THOMAS POUR PATH.JOIN
 //Cela indique à Express qu'il faut gérer la ressource images de manière statique (un sous-répertoire de notre répertoire de base, __dirname(variable d'environnement qui indique le chemin absolu du répertoire contenant le fichier en cours d'exécution.)) à chaque fois qu'elle reçoit une requête vers la route /images
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

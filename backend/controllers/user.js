@@ -6,7 +6,7 @@ const jwToken = require('jsonwebtoken');
 //On importe crypto afin de crypter l'adresse mail après inscription
 const cryptojs = require('crypto-js');
 require('dotenv').config();
-//On importe email validator pour s'assurer que l'utilisateur s'inscrit avec un email(ok sur front mais postman acceptait user wo @domaine.pays)
+//On importe email validator pour s'assurer que l'utilisateur s'inscrit avec un email
 const checkEmail = require('email-validator');
 
 //On importe notre modèle d'utilisateurs
@@ -14,8 +14,6 @@ const User = require('../models/User');
 
 //On importe notre modèle de complexité mot de passe à l'inscription
 const schemaPassword = require('../models/password');
-
-
 
 exports.signup = (req, res, next) => {
   if (!checkEmail.validate(req.body.email)) {
